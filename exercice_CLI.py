@@ -4,13 +4,15 @@ Il prend en entrée une requête à base de mots clés et,à partir de l'API EHR
 sort un fichier CSV (?) contenant les données qui y sont associées.
 """
 
-import requests, json
+import requests, json, click
 
 # Création du programme de base avant transformation en CLI
 # Requetage JSon: récupération de l'url puis des données associées.
 # Pour l'instant j'ai uniquement travaillé sur un mot clé correspondant au type mais je pense qu'on peut tenter d'
 # ajouter un deuxième argument, par exemple ne faire ressortir que les objets où l'on retrouve ce 2ème argument?
 
+@click.command()
+@click.argument("mot_cle", type=str)
 def requetage(mot_cle):
     """Récupère les données correspondant à la requête faite par l'utilisateur sur l'API EHRI
      et créé un fichier csv avec celles-ci
@@ -29,11 +31,14 @@ def requetage(mot_cle):
         #exemple de données à récupérer, à voir lesquelles prendre
         id=objet['id']
         type=objet['type']
-        nom=objet['attributes']['descriptions'][0]['name']
+        #nom=objet['attributes']['descriptions'][0]['name']
         lien=objet['links']['self']
         #pour l'instant uniquement affichage des donnés obtenues, à mettre sous forme csv après?
-        resultat.append([id, type, nom, lien])
+        resultat.append([id, type, lien])
     print(resultat)
 
-recherche_utilisateur=input('Rentrez un mot clé (DocumentaryUnit, HistoricalAgent, repository ou country):')
-requetage(recherche_utilisateur)
+"""recherche_utilisateur=input('Rentrez un mot clé (DocumentaryUnit, HistoricalAgent, repository ou country):')
+requetage(recherche_utilisateur)"""
+
+if __name__=='__main__':
+    requetage()
