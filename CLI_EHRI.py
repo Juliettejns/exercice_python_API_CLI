@@ -33,7 +33,7 @@ def requetage(mot_cle):
 
         #pour l'instant uniquement affichage des données obtenues, à mettre sous forme csv après?
             resultat.append([id, type, nom, presentation, lien])
-        #fonctionne mais uniquement pour le mot-clé DocumentaryUnit
+        #fonctionne mais uniquement pour le mot-clé DocumentaryUnit car structure des données diffère selon mot-clé
         except (IndexError, KeyError):
             pass
     print(resultat)
