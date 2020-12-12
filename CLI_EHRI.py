@@ -8,8 +8,8 @@ import requests, json, click
 
 
 
-def requetage(mot_cle):
-    """Exécute une recherche sur l'API EHRI à partir de l'entrée d'un mot-clé issu de cette liste restreinte:
+def requetage(mot_cle, full=False):
+    """Fait une recherche sur l'API EHRI à partir de l'entrée d'un mot-clé issu de cette liste restreinte:
     Country, Repository, HistoricalAgent, DocumentaryUnit.
     :param mot_cle: chaîne de caractères rentrée par l'utilisateur.
     :type mot_cle: str
@@ -35,12 +35,16 @@ def requetage(mot_cle):
 
 @click.command()
 @click.argument("query", type=str)
-def run(query):
+@click.option("-f", "--full", is_flag=True, default=False, help="obtenir toutes les informations récupérées")
+def run(query, full):
     """Exécute une recherche sur API EHRI et l'affiche dans le terminal"""
     resultat=requetage(query)
     print("Nombre de résultats:{}".format(len(resultat)))
-    for objet in resultat:
-        print("id:{}, type:{}".format(objet['id'], objet['type']))
 
+    for objet in resultat:
+        print("id:{}".format(objet['id']))
+    if full:
+        for objet in resultat:
+            print("id{}, type:{}, lien:{}".format(objet['id'], objet['type'], objet['lien']))
 if __name__ == "__main__":
    run()
