@@ -26,12 +26,9 @@ def requetage(mot_cle):
             # exemple de données à récupérer, à voir lesquelles prendre
             id_objet = objet['id']
             type_objet = objet['type']
-            description = objet["attributes"]["descriptions"][0]
-            nom = description["name"]
-            presentation = description["scopeAndContent"]
             lien = objet['links']['self']
 
-            resultat.append([id_objet, type_objet, nom, presentation, lien])
+            resultat.append([id_objet, type_objet, lien])
         # fonctionne mais uniquement pour le mot-clé DocumentaryUnit car structure des données diffère selon mot-clé
         except (IndexError, KeyError):
             pass
