@@ -20,15 +20,22 @@ def requetage(mot_cle):
     url = "https://portal.ehri-project.eu/api/v1/search?type=" + mot_cle
     requete = requests.get(url)
     donnees = requete.json()
-    resultat = []
+    return donnees
+
+@click.command()
+@click.command("donnees")
+def impression_donnee_ScopeContent(donnees):
+    resultat=[]
     for objet in donnees['data']:
         try:
             # exemple de données à récupérer, à voir lesquelles prendre
             id_objet = objet['id']
             type_objet = objet['type']
             lien = objet['links']['self']
-
-            resultat.append([id_objet, type_objet, lien])
+            description = objet["attributes"]["descriptions"][0]
+            nom = description["name"]
+            presentation = description["scopeAndContent"]
+            resultat.append([id_objet, type_objet, nom, presentation, lien])
         # fonctionne mais uniquement pour le mot-clé DocumentaryUnit car structure des données diffère selon mot-clé
         except (IndexError, KeyError):
             pass
