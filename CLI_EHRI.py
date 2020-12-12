@@ -8,7 +8,7 @@ import requests, json, click
 
 
 
-def requetage(mot_cle, full=False):
+def requetage(mot_cle):
     """Fait une recherche sur l'API EHRI à partir de l'entrée d'un mot-clé issu de cette liste restreinte:
     Country, Repository, HistoricalAgent, DocumentaryUnit.
     :param mot_cle: chaîne de caractères rentrée par l'utilisateur.
@@ -24,11 +24,17 @@ def requetage(mot_cle, full=False):
     for objet in donnees['data']:
         try:
             # exemple de données à récupérer: ici celles qui fonctionnent pour tout les mots_clé
-
+            # on essaie d'obtenir le nom si il existe, une description si elle existe, les fichiers n'étant pas identiques
             resultat.append({"id": objet['id'],
                              "type": objet['type'],
-                             "lien": objet['links']['self']
+                             "lien": objet['links']['self'],
+                             "nom":[]
                              })
+            if objet['type']=="Repository" or objet['type']=="HistoricalAgent":
+                resultat[-1]['nom'].append(objet['attributes']['name'])
+            elif objet['type']=="DocumentaryUnit":
+                resultat[-1]['nom'].append(objet['attributes']['descriptions'][0]['name'])
+
         except (IndexError, KeyError):
             pass
     return resultat
@@ -42,9 +48,10 @@ def run(query, full):
     print("Nombre de résultats:{}".format(len(resultat)))
 
     for objet in resultat:
-        print("id:{}".format(objet['id']))
+        print("id:{}, nom:{}".format(objet['id'], objet['nom']))
     if full:
         for objet in resultat:
-            print("id{}, type:{}, lien:{}".format(objet['id'], objet['type'], objet['lien']))
+            print("id: {}, nom:{}, type:{}, lien:{}".format(objet['id'], objet['nom'], objet['type'], objet['lien']))
+
 if __name__ == "__main__":
    run()
