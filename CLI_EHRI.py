@@ -9,37 +9,34 @@ import requests, json, click
 @click.command()
 @click.argument("mot_cle", type=str)
 def requetage(mot_cle):
-
-    """Exécute une recherche sur l'API EHRI à partir de l'entrée d'un mot-clé issu de cette liste restreinte: Country, Repository, HistoricalAgent, DocumentaryUnit.
+    """Exécute une recherche sur l'API EHRI à partir de l'entrée d'un mot-clé issu de cette liste restreinte:
+    Country, Repository, HistoricalAgent, DocumentaryUnit.
     :param mot_cle: chaîne de caractères rentrée par l'utilisateur.
     :type mot_cle: str
     :param resultat: liste de liste contenant les données importantes de la requête
     :type resultat: list
-     """
+    """
 
-    url = "https://portal.ehri-project.eu/api/v1/search?type="+mot_cle
+    url = "https://portal.ehri-project.eu/api/v1/search?type=" + mot_cle
     requete = requests.get(url)
     donnees = requete.json()
-    resultat=[]
+    resultat = []
     for objet in donnees['data']:
         try:
-        #exemple de données à récupérer, à voir lesquelles prendre
-            id=objet['id']
-            type=objet['type']
+            # exemple de données à récupérer, à voir lesquelles prendre
+            id_objet = objet['id']
+            type_objet = objet['type']
             description = objet["attributes"]["descriptions"][0]
             nom = description["name"]
             presentation = description["scopeAndContent"]
-            lien=objet['links']['self']
+            lien = objet['links']['self']
 
-        #pour l'instant uniquement affichage des données obtenues, à mettre sous forme csv après?
-            resultat.append([id, type, nom, presentation, lien])
-        #fonctionne mais uniquement pour le mot-clé DocumentaryUnit car structure des données diffère selon mot-clé
+            resultat.append([id_objet, type_objet, nom, presentation, lien])
+        # fonctionne mais uniquement pour le mot-clé DocumentaryUnit car structure des données diffère selon mot-clé
         except (IndexError, KeyError):
             pass
     print(resultat)
 
+
 if __name__ == "__main__":
     requetage()
-
-"""recherche_utilisateur=input(mot_cle)
-print(requetage(recherche_utilisateur))"""
